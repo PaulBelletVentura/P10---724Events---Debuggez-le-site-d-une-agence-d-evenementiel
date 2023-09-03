@@ -6,10 +6,18 @@ import "./style.scss";
 
 const Slider = () => {
   const { data } = useData();
-  const [index, setIndex] = useState(0);
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1 // Tri dans l'ordre chronologique, faire test en live dans le fichier events.json
-  )|| []; // ou valeur nule
+    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
+  ) || [];
+
+  const [index, setIndex] = useState(-1); // Définir initialement à -1
+
+  useEffect(() => {
+    if (byDateDesc.length > 0 && index === -1) {
+      // Si des données sont disponibles et l'index est -1, définissez l'index sur 0
+      setIndex(0);
+    }
+  }, [byDateDesc, index]);
 
   const nextCard = () => {
     setIndex((prevIndex) => (prevIndex + 1) % byDateDesc.length);
@@ -26,11 +34,11 @@ const Slider = () => {
 
   return (
     <div className="SlideCardList">
-      {byDateDesc?.map((event) => (
+      {byDateDesc?.map((event, eventIdx) => (
         <div
-          key={event.id} // Utilisation de l'identifiant unique comme clé
+          key={`${event.title}-${event.description}-${event.date}`}
           className={`SlideCard SlideCard--${
-            index === byDateDesc.indexOf(event) ? "display" : "hide"
+            index === eventIdx ? "display" : "hide"
           }`}
         >
           <img src={event.cover} alt="forum" />
@@ -47,7 +55,7 @@ const Slider = () => {
         <div className="SlideCard__pagination">
           {byDateDesc?.map((event, radioIdx) => (
             <input
-              key={event.id} // Utilisation de l'identifiant unique comme clé
+              key={`${event.title}-${event.description}-${event.date}`}
               type="radio"
               name="radio-button"
               checked={index === radioIdx}
