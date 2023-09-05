@@ -16,7 +16,7 @@ const Slider = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(nextCard, 2000);
+    const timer = setTimeout(nextCard, 5000); // Modification timer slider
     return () => clearTimeout(timer);
   }, [index]);
 
