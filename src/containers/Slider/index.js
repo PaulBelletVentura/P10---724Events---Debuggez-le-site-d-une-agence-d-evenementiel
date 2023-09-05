@@ -6,31 +6,39 @@ import "./style.scss";
 
 const Slider = () => {
   const { data } = useData();
-  const [index, setIndex] = useState(0);
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1 // Tri dans l'ordre chronologique, faire test en live dans le fichier events.json
-  )|| []; // ou valeur nule
+    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1  // Ordre chronologique des slides en fonction des dates
+  ) || [];
+
+  const [index, setIndex] = useState(-1); // Définir initialement à -1
+
+  useEffect(() => {
+    if (byDateDesc.length > 0 && index === -1) {
+      // Si les données sont disponibles et l'index est -1, l'index est défini sur 0
+      setIndex(0);
+    }
+  }, [byDateDesc, index]);
 
   const nextCard = () => {
-    setIndex((prevIndex) => (prevIndex + 1) % byDateDesc.length);
+    setIndex((prevIndex) => (prevIndex + 1) % byDateDesc.length);  // Boucle du slider 
   };
 
   useEffect(() => {
-    const timer = setTimeout(nextCard, 2000);
+    const timer = setTimeout(nextCard, 5000);
     return () => clearTimeout(timer);
   }, [index]);
 
-  const handleRadioChange = (radioIdx) => {
+  const handleRadioChange = (radioIdx) => {  // Ajout fonction handleRadio pour les dots
     setIndex(radioIdx);
   };
 
   return (
     <div className="SlideCardList">
-      {byDateDesc?.map((event) => (
+      {byDateDesc?.map((event, eventIdx) => (
         <div
-          key={event.id} // Utilisation de l'identifiant unique comme clé
+          key={`${event.title}-${event.description}-${event.date}`} // Ajout de key unique
           className={`SlideCard SlideCard--${
-            index === byDateDesc.indexOf(event) ? "display" : "hide"
+            index === eventIdx ? "display" : "hide"
           }`}
         >
           <img src={event.cover} alt="forum" />
@@ -47,11 +55,11 @@ const Slider = () => {
         <div className="SlideCard__pagination">
           {byDateDesc?.map((event, radioIdx) => (
             <input
-              key={event.id} // Utilisation de l'identifiant unique comme clé
+              key={`${event.title}-${event.description}-${event.date}`} // Ajout de key unique
               type="radio"
               name="radio-button"
               checked={index === radioIdx}
-              onChange={() => handleRadioChange(radioIdx)}
+              onChange={() => handleRadioChange(radioIdx)} // Ajout fonction handleRadio
             />
           ))}
         </div>
