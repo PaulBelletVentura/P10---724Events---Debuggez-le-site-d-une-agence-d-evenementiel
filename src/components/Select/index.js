@@ -16,9 +16,9 @@ const Select = ({
   const [value, setValue] = useState();
   const [collapsed, setCollapsed] = useState(true);
   const changeValue = (newValue) => { // Début correction -----------------------------------------------------------------------------
-    onChange(newValue); // Appeler onChange avec la nouvelle valeur
-    setValue(newValue); // Mettre à jour la valeur sélectionnée
-    setCollapsed(true); // Plier la liste des options après avoir sélectionné une catégorie
+    onChange(newValue); // Appel de onChange avec la nouvelle valeur
+    setValue(newValue); // Mise à jour de la valeur sélectionnée
+    setCollapsed(true); 
   };
   
   return (
